@@ -6,13 +6,14 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { clerkId, ratAge, ratWeight, ratTemp } = await req.json();
+    const { clerkId, ratAge, ratWeight, ratTemp, health } = await req.json();
 
     const newRate = await prisma.rate.create({
       data: {
         ratAge,
         ratWeight,
         ratTemp,
+        health,
         clerkId,
       },
     });

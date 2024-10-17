@@ -7,6 +7,10 @@ import {
 } from '@clerk/nextjs'
 import './globals.css'
 import NavBar from '@/components/navbar/NavBar'
+import "react-toastify/dist/ReactToastify.css";
+
+import { ToastContainer, toast } from 'react-toastify';
+
 export default function RootLayout({
   children,
 }: {
@@ -17,6 +21,7 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <NavBar/>
+          <ToastContainer/>
           {children}
         </body>
       </html>

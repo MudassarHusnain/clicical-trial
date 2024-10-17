@@ -12,6 +12,7 @@ model Rate {
   ratAge    Int
   ratWeight Float
   ratTemp   Float
+  health    String
   createdAt DateTime @default(now())
   clerkId   String
 }
