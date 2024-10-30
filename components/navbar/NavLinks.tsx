@@ -52,14 +52,24 @@ function NavLinks() {
             {/* Desktop Menu */}
             <div className="hidden md:block">
                 <NavigationMenuList>
-                    <NavigationMenuItem>
+                <NavigationMenuItem>
                         <Link href="/trialsData" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">Trials Data</NavigationMenuLink>
+                            <NavigationMenuLink className="font-bold text-xl m-5">Animal Assesment</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <Link href="/newTrial" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">New Trial</NavigationMenuLink>
+                        <Link href="/trialsData" legacyBehavior passHref>
+                            <NavigationMenuLink className="font-bold text-xl m-5">Data Collection-ESR</NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <Link href="/trialsData" legacyBehavior passHref>
+                            <NavigationMenuLink className="font-bold text-xl m-5">Activity</NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <Link href="/trialsData" legacyBehavior passHref>
+                            <NavigationMenuLink className="font-bold text-xl m-5">Data Collection-CBC</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     {isSignedIn && (
@@ -69,7 +79,7 @@ function NavLinks() {
                             </Link>
                         </NavigationMenuItem>
                     )}
-
+                    
                     <SignedOut>
                         <SignInButton />
                     </SignedOut>

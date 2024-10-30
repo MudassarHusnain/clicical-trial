@@ -18,7 +18,7 @@ function Page() {
         if (response.status!=200) {
           throw new Error('Failed to fetch data');
         }
-        const data = await response.data.json();
+        const data = await response.data;
         setTrials(data);
       } catch (error) {
         console.error('Error fetching trials data:', error);
