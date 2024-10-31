@@ -75,3 +75,36 @@ export async function POST(req: Request) {
     await prisma.$disconnect();
   }
 }
+
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const clerkId = searchParams.get('clerkId');
+
+    if (!clerkId) {
+      return NextResponse.json(
+        { error: 'Missing required parameter: clerkId' },
+        { status: 400 }
+      );
+    }
+
+    // Fetch studies associated with the specific clerkId
+    const studies = await prisma.study.findMany({
+      where: { clerkId },
+    });
+
+    return NextResponse.json({
+      message: 'Studies fetched successfully',
+      studies,
+    });
+  } catch (error) {
+    console.error('Error fetching studies:', error);
+    return NextResponse.json(
+      { error: 'An internal error occurred while fetching studies' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
