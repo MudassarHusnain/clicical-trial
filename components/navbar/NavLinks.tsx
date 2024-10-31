@@ -52,7 +52,7 @@ function NavLinks() {
             {/* Desktop Menu */}
             <div className="hidden md:block">
                 <NavigationMenuList>
-                <NavigationMenuItem>
+                    {/* <NavigationMenuItem>
                         <Link href="/trialsData" legacyBehavior passHref>
                             <NavigationMenuLink className="font-bold text-xl m-5">Animal Assesment</NavigationMenuLink>
                         </Link>
@@ -71,6 +71,17 @@ function NavLinks() {
                         <Link href="/trialsData" legacyBehavior passHref>
                             <NavigationMenuLink className="font-bold text-xl m-5">Data Collection-CBC</NavigationMenuLink>
                         </Link>
+                    </NavigationMenuItem> */}
+
+                    <NavigationMenuItem>
+                        <Link href="/study" legacyBehavior passHref>
+                            <NavigationMenuLink className="font-bold text-xl m-5">Studies</NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <Link href="/study/newStudy" legacyBehavior passHref>
+                            <NavigationMenuLink className="font-bold text-xl m-5">New Study</NavigationMenuLink>
+                        </Link>
                     </NavigationMenuItem>
                     {isSignedIn && (
                         <NavigationMenuItem>
@@ -79,7 +90,7 @@ function NavLinks() {
                             </Link>
                         </NavigationMenuItem>
                     )}
-                    
+
                     <SignedOut>
                         <SignInButton />
                     </SignedOut>

@@ -7,12 +7,110 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Rate {
-  id        Int      @id @default(autoincrement())
-  ratAge    Int
-  ratWeight Float
-  ratTemp   Float
-  health    String
-  createdAt DateTime @default(now())
+// model Rate {
+//   id        Int      @id @default(autoincrement())
+//   ratAge    Int
+//   ratWeight Float
+//   ratTemp   Float
+//   health    String
+//   createdAt DateTime @default(now())
+//   clerkId   String
+// }
+
+model Study {
+  id        Int       @id @default(autoincrement())
+  name      String
+  noOfDays  Int
+  noOfRates Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
   clerkId   String
+  groups    Group[]   @relation("StudyGroups") // Define the relationship with Group
+}
+
+model Group {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  studyId   Int       // Foreign key to reference Study
+  study     Study     @relation("StudyGroups", fields: [studyId], references: [id]) // Define the relationship with Study
+  rates      Rate[]     @relation("GroupRates") // Define the relationship with Day
+}
+
+model Rate {
+  id Int @id @default(autoincrement())
+  name String
+  groupId   Int       // Foreign key to reference Group
+  group     Group     @relation("GroupRates", fields: [groupId], references: [id]) // Define the relationship with Group
+  days Day[] @relation("RateDays")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+}
+
+model Day {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  rateId   Int       // Foreign key to reference Group
+  rate     Rate     @relation("RateDays", fields: [rateId], references: [id]) // Define the relationship with Group
+  animalAssessmentData AnimalAssessmentDataRate[] @relation("DayAnimalAssessments")
+  dataCollectionEsrRate DataCollectionEsrRate[] @relation("DayEsrRates")
+  activityRates ActivityRate[] @relation("DayActivities")
+  dataCollectionCbcRate DataCollectionCbcRate[] @relation("DayCbcRates")
+}
+
+model DataCollectionEsrRate {
+  id        Int       @id @default(autoincrement())
+  name      String
+  results   Float
+  refValue  Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  dayId     Int       // Foreign key to reference Day
+  day       Day       @relation("DayEsrRates", fields: [dayId], references: [id]) // Define the relationship with Day
+}
+
+model AnimalAssessmentDataRate {
+  id        Int       @id @default(autoincrement())
+  name      String
+  weight    Int
+  lps       Float
+  detamine  Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  dayId     Int       // Foreign key to reference Day
+  day       Day       @relation("DayAnimalAssessments", fields: [dayId], references: [id]) // Define the relationship with Day
+}
+
+model DataCollectionCbcRate {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  parametersRefValue Int
+  rbc                Float
+  pcv                Float
+  plt                Float
+  wbc                Float
+  neutrophil        Float
+  lymphocyte        Float
+  eosinophil        Float
+  basophil          Float
+  monocyte          Float
+  mcv               Float
+  mch               Float
+  mchc              Float
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+  dayId             Int       // Foreign key to reference Day
+  day               Day       @relation("DayCbcRates", fields: [dayId], references: [id]) // Define the relationship with Day
+}
+
+model ActivityRate {
+  id        Int       @id @default(autoincrement())
+  comments  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  dayId     Int       // Foreign key to reference Day
+  day       Day       @relation("DayActivities", fields: [dayId], references: [id]) // Define the relationship with Day
 }
