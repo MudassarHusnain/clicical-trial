@@ -5,14 +5,16 @@ import axios from 'axios';
 interface Group {
   id: string;
   name: string;
+  studyId: number;
 }
 
-const fetchGroups = async (studyId: string): Promise<Group[]> => {
-  const { data } = await axios.get(`/api/group/${studyId}`);
+const fetchGroups = async (studyId: Number): Promise<Group[]> => {
+  const { data } = await axios.get(`/api/group?studyId=${studyId}`);
+  console.log(data)
   return data.groups;
 };
 
-export const useGroups = (studyId: string) => {
+export const useGroups = (studyId: Number) => {
   return useQuery({
     queryKey: ['groups', studyId],
     queryFn: () => fetchGroups(studyId),

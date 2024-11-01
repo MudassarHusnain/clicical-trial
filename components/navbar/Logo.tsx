@@ -11,7 +11,7 @@ function Logo() {
             &gt;
           </span>
           <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">
-            Mavvi
+            Logo
           </h1>
         </div>
       </Link>

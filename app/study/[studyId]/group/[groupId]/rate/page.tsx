@@ -1,21 +1,19 @@
-// app/studies/[studyId]/page.tsx
 'use client'; // Ensure this file is treated as a client component
 
 import { useParams } from 'next/navigation';
-import GroupsList from '@/components/GroupsList';
+import RatesList from '@/components/RatesList';
 
 const StudyPage: React.FC = () => {
-  const {studyId} = useParams();
-  console.log(studyId)
-  
+  const {groupId} = useParams();
+  console.log(groupId)
   // Check if studyId is available
-  if (!studyId) {
+  if (!groupId) {
     return <div>Loading...</div>; // Handle loading state
   }
 
   return (
     <div>
-      <GroupsList studyId={Number(studyId)} /> {/* Pass the studyId to GroupsList */}
+      <RatesList groupId={Number(groupId)} /> {/* Pass the studyId to RatesList */}
     </div>
   );
 };
