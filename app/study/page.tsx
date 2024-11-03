@@ -1,3 +1,4 @@
+// app/studies/page.tsx
 'use client';
 import { useAuth } from '@clerk/nextjs';
 import { useStudies } from '@/hooks/useStudies';
@@ -20,8 +21,8 @@ function Page() {
     console.log(`Deleting study with id: ${id}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading studies data</div>;
+  if (isLoading) return <div className="text-center mt-20">Loading...</div>;
+  if (error) return <div className="text-center mt-20">Error loading studies data</div>;
 
   return (
     <div className="mt-20 px-4">
@@ -29,41 +30,43 @@ function Page() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {studies && studies.length > 0 ? (
           studies.map((study) => (
-            <Link
-              href={`/study/${study.id}/group`}
-              className=" hover:text-blue-800  transition-colors duration-200"
+            <div
+              key={study.id}
+              className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105" // Added hover effect
             >
-              <div
-                key={study.id}
-                className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200"
+              <Link
+                href={`/study/${study.id}/group`}
+                className="block hover:text-blue-800 transition-colors duration-200 h-full" // Make link cover entire card
               >
                 <div className="absolute top-4 right-4 flex space-x-2">
                   <button
-                    onClick={() => handleEdit(study.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent Link navigation
+                      handleEdit(study.id);
+                    }}
                     className="text-blue-500 hover:text-blue-700 transition-colors"
                   >
                     <FiEdit size={20} />
                   </button>
                   <button
-                    onClick={() => handleDelete(study.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent Link navigation
+                      handleDelete(study.id);
+                    }}
                     className="text-red-500 hover:text-red-700 transition-colors"
                   >
                     <FiTrash size={20} />
                   </button>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-
-                  {study.name}
-                </h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">{study.name}</h2>
                 <p className="text-gray-600">
                   <strong>Days:</strong> {study.noOfDays}
                 </p>
                 <p className="text-gray-600">
                   <strong>Rates:</strong> {study.noOfRates}
                 </p>
-              </div>
-            </Link>
-
+              </Link>
+            </div>
           ))
         ) : (
           <p className="text-center text-gray-600 col-span-full">

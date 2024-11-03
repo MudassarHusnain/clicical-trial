@@ -24,8 +24,6 @@ const AnimalAssessmentForm: React.FC = () => {
 
   return (
       <div className="bg-white p-8 shadow-lg rounded-lg max-w-md w-full">
-       
-
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Weight</label>
           <input

@@ -42,7 +42,6 @@ const DataCollectionCbcForm: React.FC = () => {
 
   return (
     <div className="bg-white p-8 shadow-lg rounded-lg max-h-[500px] overflow-scroll h-full">
-      
       <div className="space-y-4">
         {/* CBC fields */}
         {[{ label: 'RBC', value: rbc, setValue: setRbc },
