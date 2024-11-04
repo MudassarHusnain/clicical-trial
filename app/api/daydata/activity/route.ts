@@ -31,12 +31,17 @@ export async function POST(req: Request) {
 
   export async function GET(req: Request) {
     try {
-      const { comments,dayId } = await req.json();
-
+      const {searchParams} = new URL(req.url);
+      const dayId = searchParams.get('dayId')
+      
+      if (!dayId) {
+        return NextResponse.json(
+          { error: 'Missing required parameter: clerkId' },
+          { status: 400 }
+        );
+      }
       const newStudy = await prisma.activityRate.findMany({
-        where: {
-            dayId,
-        },
+        where: { dayId: Number(dayId) },
       });
   
       return NextResponse.json({

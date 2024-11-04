@@ -15,8 +15,9 @@ interface AnimalAssessment {
 // Fetch animal assessments based on the dayId
 const fetchAnimalAssessments = async (dayId: number): Promise<AnimalAssessment[]> => {
   const { data } = await axios.get(`/api/daydata/animalAssessment?dayId=${dayId}`);
-  return data.animalAssessments; // Adjust based on your API response
+  return data.assessments; // Adjusted to match the response structure
 };
+
 
 // Custom hook for fetching animal assessments
 export const useAnimalAssessments = (dayId: number) => {
