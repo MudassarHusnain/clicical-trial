@@ -1,21 +1,34 @@
-// components/ActivityForm.tsx
 'use client';
 
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useParams } from 'next/navigation';
+import { useCreateActivity } from '@/hooks/useActivity';
 
 const ActivityForm: React.FC = () => {
+    const { dayId } = useParams();
     const [comments, setComments] = useState<string>('');
+    
+    const { mutate: createActivity, isMutating } = useCreateActivity();
 
-    const handleSubmit = async () => {
-        try {
-            // Add API call here to submit form data
-            toast.success('Activity data submitted successfully!');
-            // Reset form fields
-            setComments('');
-        } catch (error) {
-            toast.error('Failed to submit activity data');
+    const handleSubmit = () => {
+        if (!dayId) {
+            toast.error("Day ID is missing.");
+            return;
         }
+
+        createActivity(
+            { comments, dayId: Number(dayId) },
+            {
+                onSuccess: () => {
+                    toast.success('Activity data submitted successfully!');
+                    setComments('');
+                },
+                onError: () => {
+                    toast.error('Failed to submit activity data');
+                }
+            }
+        );
     };
 
     return (
@@ -34,9 +47,12 @@ const ActivityForm: React.FC = () => {
 
             <button
                 onClick={handleSubmit}
-                className="w-full bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500"
+                disabled={isMutating}
+                className={`w-full bg-purple-600 text-white font-bold py-2 px-4 rounded-lg 
+                    ${isMutating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'} 
+                    transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500`}
             >
-                Submit Activity
+                {isMutating ? 'Submitting...' : 'Submit Activity'}
             </button>
         </div>
     );

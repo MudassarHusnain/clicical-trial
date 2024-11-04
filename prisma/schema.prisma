@@ -63,7 +63,6 @@ model Day {
 
 model DataCollectionEsrRate {
   id        Int       @id @default(autoincrement())
-  name      String
   results   Float
   refValue  Float
   createdAt DateTime  @default(now())
@@ -74,7 +73,6 @@ model DataCollectionEsrRate {
 
 model AnimalAssessmentDataRate {
   id        Int       @id @default(autoincrement())
-  name      String
   weight    Int
   lps       Float
   detamine  Float
@@ -86,7 +84,6 @@ model AnimalAssessmentDataRate {
 
 model DataCollectionCbcRate {
   id                 Int       @id @default(autoincrement())
-  name               String
   parametersRefValue Int
   rbc                Float
   pcv                Float
