@@ -9,13 +9,13 @@ interface Activity {
   updatedAt: string;
 }
 
-const fetchActivities = async (dayId: number): Promise<Activity[]> => {
+const fetchActivities = async (dayId: number): Promise<Activity> => {
   const { data } = await axios.get(`/api/daydata/activity?dayId=${dayId}`);
-  return data.activities;
+  return data.activityData;
 };
 
 export const useActivities = (dayId: number) => {
-  return useQuery<Activity[], Error>({
+  return useQuery<Activity, Error>({
     queryKey: ['activities', dayId],
     queryFn: () => fetchActivities(dayId),
     enabled: !!dayId,
@@ -35,5 +35,16 @@ const createActivity = async (newActivity: NewActivity): Promise<Activity> => {
 export const useCreateActivity = (): UseMutationResult<Activity, Error, NewActivity> => {
   return useMutation<Activity, Error, NewActivity>({
     mutationFn: createActivity,
+  });
+};
+
+const updateActivity = async (updatedActivity: NewActivity): Promise<Activity> => {
+  const { data } = await axios.put(`/api/daydata/activity`, updatedActivity);
+  return data; // Assuming the response is of type Activity
+};
+
+export const useUpdateActivity = (id: number): UseMutationResult<Activity, Error, Activity> => {
+  return useMutation<Activity, Error, Activity>({
+    mutationFn: updateActivity,
   });
 };

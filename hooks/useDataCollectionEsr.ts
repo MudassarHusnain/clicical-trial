@@ -11,14 +11,14 @@ interface DataCollectionEsr {
 }
 
 // Fetch data collection for a specific day
-const fetchDataCollectionEsr = async (dayId: number): Promise<DataCollectionEsr[]> => {
+const fetchDataCollectionEsr = async (dayId: number): Promise<DataCollectionEsr> => {
   const { data } = await axios.get(`/api/daydata/dataCollectionEsr?dayId=${dayId}`);
   return data.dataCollectionEsr; // Adjust based on your API response structure
 };
 
 // Query for data collection based on dayId
 export const useDataCollectionEsr = (dayId: number) => {
-  return useQuery<DataCollectionEsr[], Error>({
+  return useQuery<DataCollectionEsr, Error>({
     queryKey: ['dataCollectionEsr', dayId],
     queryFn: () => fetchDataCollectionEsr(dayId),
     enabled: !!dayId,

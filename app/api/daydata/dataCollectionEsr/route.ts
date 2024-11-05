@@ -45,7 +45,7 @@ export async function GET(req: Request) {
     }
 
     // Retrieve DataCollectionEsr entries for the specified dayId
-    const dataCollectionEsr = await prisma.dataCollectionEsrRate.findMany({
+    const dataCollectionEsr = await prisma.dataCollectionEsrRate.findFirst({
       where: {
         dayId: Number(dayId),
       },

@@ -13,7 +13,7 @@ interface AnimalAssessment {
 }
 
 // Fetch animal assessments based on the dayId
-const fetchAnimalAssessments = async (dayId: number): Promise<AnimalAssessment[]> => {
+const fetchAnimalAssessments = async (dayId: number): Promise<AnimalAssessment> => {
   const { data } = await axios.get(`/api/daydata/animalAssessment?dayId=${dayId}`);
   return data.assessments; // Adjusted to match the response structure
 };
@@ -21,7 +21,7 @@ const fetchAnimalAssessments = async (dayId: number): Promise<AnimalAssessment[]
 
 // Custom hook for fetching animal assessments
 export const useAnimalAssessments = (dayId: number) => {
-  return useQuery<AnimalAssessment[], Error>({
+  return useQuery<AnimalAssessment, Error>({
     queryKey: ['animalAssessments', dayId],
     queryFn: () => fetchAnimalAssessments(dayId),
     enabled: !!dayId,
@@ -46,5 +46,16 @@ const createAnimalAssessment = async (newAssessment: NewAnimalAssessment): Promi
 export const useCreateAnimalAssessment = (): UseMutationResult<AnimalAssessment, Error, NewAnimalAssessment> => {
   return useMutation<AnimalAssessment, Error, NewAnimalAssessment>({
     mutationFn: createAnimalAssessment,
+  });
+};
+
+const UpdateAnimalAssessment = async (updateAssessment: AnimalAssessment): Promise<AnimalAssessment> => {
+  const { data } = await axios.put('/api/daydata/animalAssessment', updateAssessment);
+  return data;
+};
+
+export const useUpdateAnimalAssessment = (): UseMutationResult<AnimalAssessment, Error, AnimalAssessment> => {
+  return useMutation<AnimalAssessment, Error, AnimalAssessment>({
+    mutationFn: UpdateAnimalAssessment,
   });
 };

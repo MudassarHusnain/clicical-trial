@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     try {
       const { comments,dayId } = await req.json();
 
-      const newDay = await prisma.activityRate.create({
+      const activityData = await prisma.activityRate.create({
         data: {
             comments,
             dayId,
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   
       return NextResponse.json({
         message: 'Study with groups, rates, and days created successfully',
-        study: newDay,
+        activityData: activityData,
       });
     } catch (error) {
       console.error('Error creating study:', error);
@@ -36,17 +36,17 @@ export async function POST(req: Request) {
       
       if (!dayId) {
         return NextResponse.json(
-          { error: 'Missing required parameter: clerkId' },
+          { error: 'Missing required parameter: dayId' },
           { status: 400 }
         );
       }
-      const newStudy = await prisma.activityRate.findMany({
+      const activityData = await prisma.activityRate.findFirst({
         where: { dayId: Number(dayId) },
       });
   
       return NextResponse.json({
         message: 'Study with groups, rates, and days created successfully',
-        study: newStudy,
+        activityData: activityData,
       });
     } catch (error) {
       console.error('Error creating study:', error);
@@ -58,3 +58,33 @@ export async function POST(req: Request) {
       await prisma.$disconnect();
     }
   }
+
+
+  export async function PUT(req: Request) {
+    try {
+      const { id, comments } = await req.json(); // Ensure you're also sending an 'id' in the request
+  
+      const activityData = await prisma.activityRate.update({
+        where: {
+          id: id, // Specify the unique identifier for the record you want to update
+        },
+        data: {
+          comments,
+        },
+      });
+  
+      return NextResponse.json({
+        message: 'Activity rate updated successfully',
+        activityData: activityData,
+      });
+    } catch (error) {
+      console.error('Error updating activity rate:', error);
+      return NextResponse.json(
+        { error: 'An internal error occurred while updating the activity rate' },
+        { status: 500 }
+      );
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+  

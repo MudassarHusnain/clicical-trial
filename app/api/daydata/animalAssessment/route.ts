@@ -39,7 +39,7 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const dayId = searchParams.get('dayId');
 
-        const assessments = await prisma.animalAssessmentDataRate.findMany({
+        const assessments = await prisma.animalAssessmentDataRate.findFirst({
             where: {
                 dayId: Number(dayId), // Ensure dayId is a number
             },
@@ -58,4 +58,34 @@ export async function GET(req: Request) {
     } finally {
         await prisma.$disconnect();
     }
+}
+
+
+export async function PUT(req: Request) {
+  try {
+    const { id, weight, lps, detamine, dayId } = await req.json();
+
+    const animalAssessmentData = await prisma.animalAssessmentDataRate.update({
+      where: { id: id },
+      data: {
+        weight,
+        lps,
+        detamine,
+        dayId,
+      },
+    });
+
+    return NextResponse.json({
+      message: 'Animal assessment updated successfully',
+      animalAssessmentData: animalAssessmentData,
+    });
+  } catch (error) {
+    console.error('Error updating animal assessment:', error);
+    return NextResponse.json(
+      { error: 'An internal error occurred while updating the assessment' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
 }
