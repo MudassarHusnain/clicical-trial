@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRates } from '@/hooks/useRates'; // Make sure the path is correct
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import Hierarchy from './Hierarchy';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
-import { toast } from 'react-toastify'; // Import react-toastify
+import { toast } from 'react-toastify';
 
 interface RatesListProps {
   groupId: number;
@@ -15,19 +15,26 @@ interface RatesListProps {
 
 const RatesList: React.FC<RatesListProps> = ({ groupId }) => {
   const { data: rates = [], isLoading, error } = useRates(groupId);
-  const [localRates, setLocalRates] = useState(rates); // Local state for rates
+  const [localRates, setLocalRates] = useState(rates); 
   const { studyId } = useParams();
+
+  // Sync localRates with fetched rates data on initial load or when rates changes
+  useEffect(() => {
+    if (rates.length !== localRates.length) {
+      setLocalRates(rates);
+    }
+  }, [rates]);
+  
 
   if (isLoading) return <div className="text-center mt-20">Loading rates...</div>;
   if (error) return <div className="text-center mt-20">Error loading rates.</div>;
 
   const createRate = async () => {
     try {
-      // Send the request to create a new rate
-      const response = await axios.post(`/api/rate`,{groupId});
-      const newRate = response.data.newRate; // Assuming the response contains the new rate
+      const response = await axios.post(`/api/rate`, { groupId: Number(groupId) });
+      const newRate = response.data.newRate;
 
-      // Update the local state with the newly created rate
+      // Update localRates with the new rate
       setLocalRates((prevRates) => [...prevRates, newRate]);
 
       // Show success toast
@@ -72,7 +79,7 @@ const RatesList: React.FC<RatesListProps> = ({ groupId }) => {
           localRates.map((rate) => (
             <div
               key={rate.id}
-              className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105" // Add hover effect
+              className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105"
             >
               <Link
                 href={`/study/${studyId}/group/${groupId}/rate/${rate.id}/day`}
@@ -82,7 +89,7 @@ const RatesList: React.FC<RatesListProps> = ({ groupId }) => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent Link navigation
-                      console.log(`Edit rate with id: ${rate.id}`); // Implement edit logic
+                      console.log(`Edit rate with id: ${rate.id}`);
                     }}
                     className="text-blue-500 hover:text-blue-700 transition-colors"
                   >
@@ -91,7 +98,7 @@ const RatesList: React.FC<RatesListProps> = ({ groupId }) => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent Link navigation
-                      console.log(`Delete rate with id: ${rate.id}`); // Implement delete logic
+                      console.log(`Delete rate with id: ${rate.id}`);
                     }}
                     className="text-red-500 hover:text-red-700 transition-colors"
                   >
