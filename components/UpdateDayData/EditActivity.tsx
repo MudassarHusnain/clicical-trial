@@ -5,13 +5,14 @@ import { useUpdateActivity } from '@/hooks/useActivity';
 
 interface ActivityFormProps {
     editData?: { id: number; comments: string; dayId: number }; // Define the shape of the editData
+    closeModal: () => void; // Define the closeModal function prop
 }
 
-const EditActivityForm: React.FC<ActivityFormProps> = ({ editData }) => {
+const EditActivityForm: React.FC<ActivityFormProps> = ({ editData, closeModal }) => {
     const { dayId } = useParams();
     const [comments, setComments] = useState('');
 
-    const { mutate: updatedActivity, isMutating } = useUpdateActivity(editData);
+    const { mutate: updatedActivity, isMutating } = useUpdateActivity();
 
     // Set initial state from editData if it exists
     useEffect(() => {
@@ -32,6 +33,7 @@ const EditActivityForm: React.FC<ActivityFormProps> = ({ editData }) => {
                 onSuccess: () => {
                     toast.success('Activity data submitted successfully!');
                     setComments(''); // Clear comments or keep as is based on your preference
+                    closeModal(); // Close the modal after submitting
                 },
                 onError: (error) => {
                     console.error('Error during update:', error);

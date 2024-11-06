@@ -5,8 +5,11 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCreateDataCollectionEsr } from '@/hooks/useDataCollectionEsr'; // Import the hook
 import { useParams } from 'next/navigation'; // To access the dayId parameter
+interface DATACOLLEDTIONESR{
+  closeModal: () => void;
 
-const DataCollectionEsrForm: React.FC = () => {
+}
+const DataCollectionEsrForm: React.FC<DATACOLLEDTIONESR> = ({closeModal}) => {
   const { dayId } = useParams(); // Get dayId from URL parameters
   const [results, setResults] = useState<number | ''>('');
   const [refValue, setRefValue] = useState<number | ''>(0); // You might want to set a default or allow it to be empty
@@ -32,6 +35,7 @@ const DataCollectionEsrForm: React.FC = () => {
             // Reset form fields
             setResults('');
             setRefValue(0); // Reset refValue to its default state
+            closeModal();
           },
           onError: () => {
             toast.error('Failed to submit ESR data');

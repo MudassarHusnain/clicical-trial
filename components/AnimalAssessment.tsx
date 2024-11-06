@@ -5,8 +5,11 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCreateAnimalAssessment } from '@/hooks/useAnimalAssessment'; // Import the hook for API calls
 import { useParams } from 'next/navigation'; // To access the dayId parameter
+interface animalAssessmentData{
+  closeModal: () => void;
 
-const AnimalAssessmentForm: React.FC = () => {
+}
+const AnimalAssessmentForm: React.FC<animalAssessmentData> = ({closeModal}) => {
   const { dayId } = useParams(); // Get dayId from URL parameters
   const [weight, setWeight] = useState<number | ''>('');
   const [lps, setLps] = useState<number | ''>('');
@@ -30,6 +33,7 @@ const AnimalAssessmentForm: React.FC = () => {
             setWeight('');
             setLps('');
             setDetamine('');
+            closeModal();
           },
           onError: () => {
             toast.error('Failed to submit Animal Assessment data');

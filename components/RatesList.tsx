@@ -1,11 +1,13 @@
-// components/RatesList.tsx
 'use client';
 
+import { useState } from 'react';
 import { useRates } from '@/hooks/useRates'; // Make sure the path is correct
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import Hierarchy from './Hierarchy';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import axios from 'axios';
+import { toast } from 'react-toastify'; // Import react-toastify
 
 interface RatesListProps {
   groupId: number;
@@ -13,25 +15,69 @@ interface RatesListProps {
 
 const RatesList: React.FC<RatesListProps> = ({ groupId }) => {
   const { data: rates = [], isLoading, error } = useRates(groupId);
+  const [localRates, setLocalRates] = useState(rates); // Local state for rates
   const { studyId } = useParams();
 
   if (isLoading) return <div className="text-center mt-20">Loading rates...</div>;
   if (error) return <div className="text-center mt-20">Error loading rates.</div>;
 
+  const createRate = async () => {
+    try {
+      // Send the request to create a new rate
+      const response = await axios.post(`/api/rate`,{groupId});
+      const newRate = response.data.newRate; // Assuming the response contains the new rate
+
+      // Update the local state with the newly created rate
+      setLocalRates((prevRates) => [...prevRates, newRate]);
+
+      // Show success toast
+      toast.success('Rate created successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        pauseOnHover: true,
+      });
+    } catch (error) {
+      console.error('Error creating rate:', error);
+
+      // Show error toast
+      toast.error('Error creating rate.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        pauseOnHover: true,
+      });
+    }
+  };
+
   return (
     <div className="mt-20 px-4">
       <Hierarchy />
-      
+
       <h1 className="text-3xl font-bold mb-6 text-center">Rates</h1>
-      
+      <div className="mb-20">
+        <button
+          onClick={createRate}
+          className="bg-blue-500 w-36 h-10 hover:bg-blue-600 flex items-center justify-center float-end rounded-md text-white"
+        >
+          Add Rate
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {rates.length > 0 ? (
-          rates.map((rate) => (
+        {localRates.length > 0 ? (
+          localRates.map((rate) => (
             <div
               key={rate.id}
               className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105" // Add hover effect
             >
-              <Link href={`/study/${studyId}/group/${groupId}/rate/${rate.id}/day`} className="flex flex-col h-full">
+              <Link
+                href={`/study/${studyId}/group/${groupId}/rate/${rate.id}/day`}
+                className="flex flex-col h-full"
+              >
                 <div className="absolute top-4 right-4 flex space-x-2">
                   <button
                     onClick={(e) => {

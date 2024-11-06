@@ -8,9 +8,10 @@ import { useParams } from 'next/navigation';
 
 interface AnimalAssessmentFormProps {
   editData?: { id: number; weight: number; lps: number; detamine: number; dayId: number };
+  closeModal: () => void;
 }
 
-const EditAnimalAssessmentForm: React.FC<AnimalAssessmentFormProps> = ({ editData }) => {
+const EditAnimalAssessmentForm: React.FC<AnimalAssessmentFormProps> = ({ editData, closeModal }) => {
   const { dayId } = useParams();
   const [weight, setWeight] = useState<number | ''>('');
   const [lps, setLps] = useState<number | ''>('');
@@ -47,6 +48,7 @@ const EditAnimalAssessmentForm: React.FC<AnimalAssessmentFormProps> = ({ editDat
             setWeight('');
             setLps('');
             setDetamine('');
+            closeModal();
           },
           onError: () => {
             toast.error('Failed to update Animal Assessment data');

@@ -2,12 +2,10 @@ import { useQuery, useMutation, UseMutationResult } from '@tanstack/react-query'
 import axios from 'axios';
 
 interface DataCollectionEsr {
-    id: number;      
-    results: number;  // Changed to number as per your model
-    refValue: number; // Changed to number as per your model
-    createdAt: Date;  
-    updatedAt: Date; 
-    dayId: number;      
+  id: number;
+  results: number;
+  refValue: number;
+  dayId: number;
 }
 
 // Fetch data collection for a specific day
@@ -38,9 +36,22 @@ const createDataCollectionEsr = async (newDataCollectionEsr: NewDataCollectionEs
   return data; // Assuming the response is of type DataCollectionEsr
 };
 
-// Mutation hook for creating new data collection
+// Mutation hook for creating a new data collection
 export const useCreateDataCollectionEsr = (): UseMutationResult<DataCollectionEsr, Error, NewDataCollectionEsr> => {
   return useMutation<DataCollectionEsr, Error, NewDataCollectionEsr>({
     mutationFn: createDataCollectionEsr,
+  });
+};
+
+// API call to update an existing data collection entry
+const updateDataCollectionEsr = async (updateData: DataCollectionEsr): Promise<DataCollectionEsr> => {
+  const { data } = await axios.put(`/api/daydata/dataCollectionEsr`, updateData);
+  return data; // Assuming the response is of type DataCollectionEsr
+};
+
+// Mutation hook for updating data collection
+export const useUpdateDataCollectionEsr = (): UseMutationResult<DataCollectionEsr, Error, DataCollectionEsr> => {
+  return useMutation<DataCollectionEsr, Error, DataCollectionEsr>({
+    mutationFn: updateDataCollectionEsr,
   });
 };

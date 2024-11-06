@@ -88,3 +88,59 @@ export async function GET(req: Request) {
         await prisma.$disconnect();
     }
 }
+
+
+export async function PUT(req: Request) {
+    try {
+        const {
+            id,
+            parametersRefValue,
+            rbc,
+            pcv,
+            plt,
+            wbc,
+            neutrophil,
+            lymphocyte,
+            eosinophil,
+            basophil,
+            monocyte,
+            mcv,
+            mch,
+            mchc,
+            dayId
+        } = await req.json();
+
+        const updatedDataCollectionCbc = await prisma.dataCollectionCbcRate.update({
+            where: { id },
+            data: {
+                parametersRefValue,
+                rbc,
+                pcv,
+                plt,
+                wbc,
+                neutrophil,
+                lymphocyte,
+                eosinophil,
+                basophil,
+                monocyte,
+                mcv,
+                mch,
+                mchc,
+                dayId
+            },
+        });
+
+        return NextResponse.json({
+            message: 'Data Collection Cbc updated successfully',
+            dataCollectionCbc: updatedDataCollectionCbc,
+        });
+    } catch (error) {
+        console.error('Error updating Data Collection Cbc:', error);
+        return NextResponse.json(
+            { error: 'An internal error occurred while updating the Data Collection Cbc' },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
+    }
+}

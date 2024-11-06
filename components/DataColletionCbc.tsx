@@ -3,8 +3,14 @@
 
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useCreateDataCollectionCbc } from '../hooks/useDataCollectionCbc'; // Adjust import as necessary
+import { useParams } from 'next/navigation'; // To access the dayId parameter
+interface DATACOLLECTIONCBC{
+  closeModal: () => void;
 
-const DataCollectionCbcForm: React.FC = () => {
+}
+const DataCollectionCbcForm: React.FC<DATACOLLECTIONCBC> = ({closeModal}) => {
+  const {dayId} = useParams()
   const [rbc, setRbc] = useState<number | ''>('');
   const [pcv, setPcv] = useState<number | ''>('');
   const [plt, setPlt] = useState<number | ''>('');
@@ -17,11 +23,38 @@ const DataCollectionCbcForm: React.FC = () => {
   const [mcv, setMcv] = useState<number | ''>('');
   const [mch, setMch] = useState<number | ''>('');
   const [mchc, setMchc] = useState<number | ''>('');
+  const [parametersRefValue, setParametersRefValue] = useState<number>(0); // example field
+
+  const createDataCollectionCbc = useCreateDataCollectionCbc();
 
   const handleSubmit = async () => {
     try {
-      // Add API call here to submit form data
+      // Make sure required fields are provided
+      if (!dayId) {
+        toast.error('Day ID is required');
+        return;
+      }
+
+      // Trigger the mutation to create a new Data Collection CBC entry
+      await createDataCollectionCbc.mutateAsync({
+        parametersRefValue,
+        rbc: rbc as number,
+        pcv: pcv as number,
+        plt: plt as number,
+        wbc: wbc as number,
+        neutrophil: neutrophil as number,
+        lymphocyte: lymphocyte as number,
+        eosinophil: eosinophil as number,
+        basophil: basophil as number,
+        monocyte: monocyte as number,
+        mcv: mcv as number,
+        mch: mch as number,
+        mchc: mchc as number,
+        dayId: Number(dayId),
+      });
+
       toast.success('Data Collection - CBC submitted successfully!');
+      
       // Reset form fields
       setRbc('');
       setPcv('');
@@ -35,6 +68,7 @@ const DataCollectionCbcForm: React.FC = () => {
       setMcv('');
       setMch('');
       setMchc('');
+      closeModal();
     } catch (error) {
       toast.error('Failed to submit CBC data');
     }

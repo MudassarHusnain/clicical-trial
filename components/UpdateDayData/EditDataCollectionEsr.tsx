@@ -1,29 +1,24 @@
-// components/DataCollectionEsrForm.tsx
+// components/EditDataCollectionEsrForm.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useCreateDataCollectionEsr } from '@/hooks/useDataCollectionEsr'; // Import the hook
-import { useParams } from 'next/navigation'; // To access the dayId parameter
+import { useParams } from 'next/navigation'; // Assuming you're using Next.js router
+import { useDataCollectionEsr, useUpdateDataCollectionEsr } from '@/hooks/useDataCollectionEsr';
 
-// Define the type for editData
-interface EditData {
-  results: number;
-  refValue: number;
+interface EditDataCollectionEsrFormProps {
+  editData?: { id: number; results: number; refValue: number }; // Shape of the editData
+  closeModal: () => void; // Function to close the modal
 }
 
-interface DataCollectionEsrFormProps {
-  editData?: EditData; // Optional prop
-}
+const EditDataCollectionEsrForm: React.FC<EditDataCollectionEsrFormProps> = ({ editData, closeModal }) => {
+  const { dayId } = useParams(); // Extract the dayId from the URL parameters
+  const { mutate: updateDataCollection, isLoading: isUpdating } = useUpdateDataCollectionEsr(); // Mutation hook for update
 
-const EditDataCollectionEsrForm: React.FC<DataCollectionEsrFormProps> = ({ editData }) => {
-  const { dayId } = useParams(); // Get dayId from URL parameters
   const [results, setResults] = useState<number | ''>('');
-  const [refValue, setRefValue] = useState<number | ''>(0); // You might want to set a default or allow it to be empty
+  const [refValue, setRefValue] = useState<number | ''>('');
 
-  const { mutate: createDataCollection, isLoading } = useCreateDataCollectionEsr(); // Use the mutation hook
-
-  // Effect to populate form fields when editData is provided
+  // Set the initial form values based on editData if it exists
   useEffect(() => {
     if (editData) {
       setResults(editData.results);
@@ -37,19 +32,25 @@ const EditDataCollectionEsrForm: React.FC<DataCollectionEsrFormProps> = ({ editD
       return;
     }
 
+    if (results === '' || refValue === '') {
+      toast.error('Please fill out all fields.');
+      return;
+    }
+
     try {
-      await createDataCollection(
-        { 
-          results: Number(results), 
-          refValue: Number(refValue), // Add refValue to the payload
-          dayId: Number(dayId) 
+      updateDataCollection(
+        {
+          id: editData?.id || 0,
+          results: Number(results),
+          refValue: Number(refValue),
+          dayId: Number(dayId),
         },
         {
           onSuccess: () => {
-            toast.success('Data Collection - ESR submitted successfully!');
-            // Reset form fields
-            setResults('');
-            setRefValue(0); // Reset refValue to its default state
+            toast.success('Data Collection - ESR updated successfully!');
+            setResults(''); // Clear form fields after successful submission
+            setRefValue('');
+            closeModal(); // Close the modal on successful submission
           },
           onError: () => {
             toast.error('Failed to submit ESR data');
@@ -68,7 +69,7 @@ const EditDataCollectionEsrForm: React.FC<DataCollectionEsrFormProps> = ({ editD
         <input
           type="number"
           value={results}
-          onChange={(e) => setResults(parseFloat(e.target.value) || '')}
+          onChange={(e) => setResults(e.target.value === '' ? '' : parseFloat(e.target.value))}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           placeholder="Enter results"
           required
@@ -80,7 +81,7 @@ const EditDataCollectionEsrForm: React.FC<DataCollectionEsrFormProps> = ({ editD
         <input
           type="number"
           value={refValue}
-          onChange={(e) => setRefValue(parseFloat(e.target.value) || '')}
+          onChange={(e) => setRefValue(e.target.value === '' ? '' : parseFloat(e.target.value))}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           placeholder="Enter reference value"
           required
@@ -89,11 +90,10 @@ const EditDataCollectionEsrForm: React.FC<DataCollectionEsrFormProps> = ({ editD
 
       <button
         onClick={handleSubmit}
-        disabled={isLoading}
-        className={`w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200 ${
-          isLoading ? 'opacity-50 cursor-not-allowed' : ''
-        }`}>
-        {isLoading ? 'Submitting...' : 'Submit ESR Data'}
+        disabled={isUpdating}
+        className={`w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200 ${isUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
+        {isUpdating ? 'Submitting...' : 'Submit ESR Data'}
       </button>
     </div>
   );

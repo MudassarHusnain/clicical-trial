@@ -65,3 +65,36 @@ export async function GET(req: Request) {
     await prisma.$disconnect();
   }
 }
+
+
+export async function PUT(req: Request) {
+  try {
+    const { id, results, refValue, dayId } = await req.json();
+
+    // Check if id is provided to determine if it's an update or create operation
+    if (id) {
+      // Update an existing DataCollectionEsr entry
+      const updatedDataCollectionEsr = await prisma.dataCollectionEsrRate.update({
+        where: { id },
+        data: {
+          results,
+          refValue,
+          dayId,
+        },
+      });
+
+      return NextResponse.json({
+        message: 'Data Collection ESR updated successfully',
+        dataCollectionEsr: updatedDataCollectionEsr,
+      });
+    } 
+  } catch (error) {
+    console.error('Error in Data Collection ESR operation:', error);
+    return NextResponse.json(
+      { error: 'An internal error occurred while processing the Data Collection ESR request' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}

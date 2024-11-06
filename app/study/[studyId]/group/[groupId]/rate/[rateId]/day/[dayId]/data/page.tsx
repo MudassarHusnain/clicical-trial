@@ -24,7 +24,7 @@ const DashboardButtons: React.FC = () => {
   const [activeForm, setActiveForm] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
-   
+
   // Fetch records for each table
   const { data: animalAssessmentData } = useAnimalAssessments(Number(dayId));
   const { data: dataCollectionEsr } = useDataCollectionEsr(Number(dayId));
@@ -40,16 +40,17 @@ const DashboardButtons: React.FC = () => {
   const closeModal = () => {
     setActiveForm(null);
     setEditData(null); // Reset edit data
+    window.location.reload();
     setIsModalOpen(false);
   };
 
   return (
     <div className="mt-20">
       <Hierarchy />
-      
+
       {/* Buttons Section */}
       <div className="flex flex-col md:flex-row md:flex-wrap gap-4 p-4 justify-center items-center">
-        
+
         {/* Animal Assessment Data Button */}
         <button
           onClick={() => animalAssessmentData ? null : openModal('AnimalAssessment')}
@@ -131,16 +132,16 @@ const DashboardButtons: React.FC = () => {
       >
         <div>
           {activeForm === 'AnimalAssessment' && (
-            editData ? <EditAnimalAssessmentForm editData={editData} /> : <AnimalAssessmentForm />
+            editData ? <EditAnimalAssessmentForm editData={editData} closeModal={closeModal} /> : <AnimalAssessmentForm closeModal={closeModal} />
           )}
           {activeForm === 'DataCollectionEsr' && (
-            editData ? <EditDataCollectionEsrForm editData={editData} /> : <DataCollectionEsrForm />
+            editData ? <EditDataCollectionEsrForm editData={editData} closeModal={closeModal} /> : <DataCollectionEsrForm closeModal={closeModal} />
           )}
           {activeForm === 'DataCollectionCbc' && (
-            editData ? <EditDataCollectionCbcForm editData={editData} /> : <DataCollectionCbcForm />
+            editData ? <EditDataCollectionCbcForm editData={editData} closeModal={closeModal} /> : <DataCollectionCbcForm closeModal={closeModal} />
           )}
           {activeForm === 'Activity' && (
-            editData ? <EditActivityForm editData={editData} /> : <ActivityForm />
+            editData ? <EditActivityForm editData={editData} closeModal={closeModal} /> : <ActivityForm closeModal={closeModal} />
           )}
         </div>
       </Modal>

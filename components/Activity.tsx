@@ -5,10 +5,13 @@ import { toast } from 'react-toastify';
 import { useParams } from 'next/navigation';
 import { useCreateActivity } from '@/hooks/useActivity';
 
-const ActivityForm: React.FC = () => {
+interface ActivityFormProps {
+  closeModal: () => void;
+}
+
+const ActivityForm: React.FC<ActivityFormProps> = ({ closeModal }) => {
     const { dayId } = useParams();
     const [comments, setComments] = useState<string>('');
-    
     const { mutate: createActivity, isMutating } = useCreateActivity();
 
     const handleSubmit = () => {
@@ -23,6 +26,7 @@ const ActivityForm: React.FC = () => {
                 onSuccess: () => {
                     toast.success('Activity data submitted successfully!');
                     setComments('');
+                    closeModal();  // Close the modal after successful submission
                 },
                 onError: () => {
                     toast.error('Failed to submit activity data');
