@@ -25,3 +25,44 @@ export async function GET(req: Request) {
     await prisma.$disconnect();
   }
 }
+
+// export async function DELETE(req: Request) {
+//     const {rateId} = req.json();
+
+
+// }
+
+export async function POST(req: Request) {
+  const { rateId } = await req.json();
+  try {
+    const ratedays = await prisma.day.findMany({
+      where: {
+        rateId: Number(rateId)
+      }
+    })
+
+    const days = ratedays.length;
+    const dayName = `Day${days + 1}`;
+
+    const newDay = await prisma.day.create({
+      data: {
+        name: dayName,
+        rateId: Number(rateId),
+      }
+    })
+
+    return NextResponse.json({
+      message: 'day created successfully',
+      day: newDay,
+    });
+  } catch (error) {
+    console.error('Error creating day:', error);
+    return NextResponse.json(
+      { error: 'An internal error occurred while creating the day' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+
+}

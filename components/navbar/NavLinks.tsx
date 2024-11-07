@@ -1,21 +1,38 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IoMdClose, IoMdMenu } from 'react-icons/io';
 import Link from 'next/link';
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from '@/components/ui/navigation-menu';
-import { useUser } from '@clerk/nextjs';  // Clerk authentication hook
+import { useUser, useAuth } from '@clerk/nextjs';  // Clerk authentication hook
 import {
     SignInButton,
     SignedIn,
     SignedOut,
     UserButton
 } from '@clerk/nextjs'
+
 function NavLinks() {
+    const { userId } = useAuth(); // Clerk auth
     const { isSignedIn } = useUser();  // Check if the user is signed in via Clerk
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false); // Track if Clerk auth has loaded
     const dropdownRef = useRef<HTMLDivElement>(null);  // For closing the dropdown when clicking outside
 
+    useEffect(() => {
+        if (isSignedIn !== undefined && userId !== undefined) {
+            setIsLoaded(true); // Authentication state has finished loading
+        }
+    }, [isSignedIn, userId]); // Trigger when isSignedIn or userId changes
+
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    // Ensure the userId and the environment variable are available
+    const isAdmin = userId === process.env.NEXT_PUBLIC_ADMIN_USER;
+
+    // Don't render the menu until Clerk authentication state is available
+    if (!isLoaded) {
+        return <div>Loading...</div>; // Optional: Show loading state while waiting for Clerk
+    }
 
     return (
         <NavigationMenu>
@@ -38,7 +55,7 @@ function NavLinks() {
                                 <li>
                                     <Link href="/newTrial" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">New Trial</Link>
                                 </li>
-                                {isSignedIn && (
+                                {isSignedIn && isAdmin && (
                                     <li>
                                         <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</Link>
                                     </li>
@@ -52,27 +69,6 @@ function NavLinks() {
             {/* Desktop Menu */}
             <div className="hidden md:block">
                 <NavigationMenuList>
-                    {/* <NavigationMenuItem>
-                        <Link href="/trialsData" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">Animal Assesment</NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <Link href="/trialsData" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">Data Collection-ESR</NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <Link href="/trialsData" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">Activity</NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <Link href="/trialsData" legacyBehavior passHref>
-                            <NavigationMenuLink className="font-bold text-xl m-5">Data Collection-CBC</NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem> */}
-
                     <NavigationMenuItem>
                         <Link href="/study" legacyBehavior passHref>
                             <NavigationMenuLink className="font-bold text-xl m-5">Studies</NavigationMenuLink>
@@ -83,7 +79,7 @@ function NavLinks() {
                             <NavigationMenuLink className="font-bold text-xl m-5">New Study</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
-                    {isSignedIn && (
+                    {isSignedIn && isAdmin && (
                         <NavigationMenuItem>
                             <Link href="/admin" legacyBehavior passHref>
                                 <NavigationMenuLink className="font-bold text-xl m-5">Admin</NavigationMenuLink>

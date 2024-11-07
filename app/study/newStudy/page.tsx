@@ -4,9 +4,10 @@ import { useAuth } from "@clerk/nextjs";
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-
+import { useRouter } from "next/navigation";
 const StudyForm: React.FC = () => {
   const { userId } = useAuth(); // Clerk auth
+  const {push} = useRouter();
   const [name, setName] = useState<string>('');
   const [noOfDays, setNoOfDays] = useState<number | ''>('');
   const [noOfRates, setNoOfRates] = useState<number | ''>('');
@@ -25,6 +26,7 @@ const StudyForm: React.FC = () => {
       setName('');
       setNoOfDays('');
       setNoOfRates('');
+      push('/study')
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to add study');
