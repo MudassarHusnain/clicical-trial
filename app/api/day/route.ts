@@ -66,3 +66,25 @@ export async function POST(req: Request) {
   }
 
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const dayId = searchParams.get('dayId');
+
+  if (!dayId) {
+    return new Response("dayId is required", { status: 400 });
+  }
+
+  try {
+    await prisma.day.delete({
+      where: {
+        id: Number(dayId),
+      },
+    });
+    
+    return new Response("Day and associated data deleted successfully", { status: 200 });
+  } catch (error) {
+    console.error("Error deleting day:", error);
+    return new Response("Failed to delete day", { status: 500 });
+  }
+}

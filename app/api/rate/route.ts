@@ -77,3 +77,25 @@ export async function POST(req: Request) {
     await prisma.$disconnect();
   }
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const rateId = searchParams.get('rateId');
+
+  if (!rateId) {
+    return new Response("rateId is required", { status: 400 });
+  }
+
+  try {
+    await prisma.rate.delete({
+      where: {
+        id: Number(rateId),
+      },
+    });
+    
+    return new Response("Rate and associated data deleted successfully", { status: 200 });
+  } catch (error) {
+    console.error("Error deleting rate:", error);
+    return new Response("Failed to delete rate", { status: 500 });
+  }
+}

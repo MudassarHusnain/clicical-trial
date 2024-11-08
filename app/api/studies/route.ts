@@ -88,11 +88,15 @@ export async function GET(req: Request) {
         { status: 400 }
       );
     }
-
-    // Fetch studies associated with the specific clerkId
-    const studies = await prisma.study.findMany({
+    let studies
+    if(clerkId===process.env.NEXT_PUBLIC_ADMIN_USER){
+       studies = await prisma.study.findMany();
+    }
+    else{
+     studies = await prisma.study.findMany({
       where: { clerkId },
     });
+  }
 
     return NextResponse.json({
       message: 'Studies fetched successfully',
