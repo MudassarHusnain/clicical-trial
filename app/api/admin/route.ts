@@ -15,7 +15,7 @@ export async function GET() {
                             days : {
                                 include: {
                                     activityRates: true,
-                                    animalAssessmentData:true,
+                                    animalAssessmentData: true,
                                     dataCollectionCbcRate: true,
                                     dataCollectionEsrRate: true,
                                 }

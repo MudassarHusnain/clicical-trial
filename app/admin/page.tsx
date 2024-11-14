@@ -80,7 +80,7 @@ const Admin: React.FC = () => {
             {label}
         </button>
     );
-
+    console.log(studies)
     return (
         <div className="container mx-auto mt-20 p-6 bg-white shadow-lg rounded-lg">
             <h1 className="text-3xl font-semibold mb-6 text-gray-800">Admin Dashboard</h1>

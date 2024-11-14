@@ -89,14 +89,18 @@ export async function GET(req: Request) {
       );
     }
     let studies
-    if(clerkId===process.env.NEXT_PUBLIC_ADMIN_USER){
-       studies = await prisma.study.findMany();
+    if (clerkId === process.env.NEXT_PUBLIC_ADMIN_USER) {
+      studies = await prisma.study.findMany({
+        orderBy:{
+          id: 'asc'
+        }
+      });
     }
-    else{
-     studies = await prisma.study.findMany({
-      where: { clerkId },
-    });
-  }
+    else {
+      studies = await prisma.study.findMany({
+        where: { clerkId },
+      });
+    }
 
     return NextResponse.json({
       message: 'Studies fetched successfully',
@@ -111,4 +115,32 @@ export async function GET(req: Request) {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+
+export async function PUT(req: Request) {
+  const { id, name } = await req.json();
+  try {
+    const editStudy = await prisma.study.update({
+      where: {
+        id: Number(id)
+      },
+      data: {
+        name,
+      }
+    });
+    return NextResponse.json({
+      message: 'Study with groups, rates, and days Edit successfully',
+      study: editStudy,
+    });
+  } catch (error) {
+    console.error('Error Editing study:', error);
+    return NextResponse.json(
+      { error: 'An internal error occurred while Edit the study' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+
 }

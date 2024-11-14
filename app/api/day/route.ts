@@ -15,6 +15,9 @@ export async function GET(req: Request) {
     // Fetch only the rate data for the specified groupId
     const days = await prisma.day.findMany({
       where: { rateId: Number(rateId) },
+      orderBy:{
+        id: 'asc'
+      }
     });
 
     return NextResponse.json({ days }, { status: 200 });
@@ -80,6 +83,7 @@ export async function DELETE(req: Request) {
       where: {
         id: Number(dayId),
       },
+      
     });
     
     return new Response("Day and associated data deleted successfully", { status: 200 });

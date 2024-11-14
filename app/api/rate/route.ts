@@ -14,6 +14,9 @@ export async function GET(req: Request) {
   try {
     const rates = await prisma.rate.findMany({
       where: { groupId: Number(groupId) },
+      orderBy:{
+        id: 'asc'
+      }
     });
 
     return NextResponse.json({ rates }, { status: 200 });

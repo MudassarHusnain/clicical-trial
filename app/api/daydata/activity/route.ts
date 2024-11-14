@@ -42,6 +42,9 @@ export async function POST(req: Request) {
       }
       const activityData = await prisma.activityRate.findFirst({
         where: { dayId: Number(dayId) },
+        orderBy:{
+          id: 'asc'
+        }
       });
   
       return NextResponse.json({

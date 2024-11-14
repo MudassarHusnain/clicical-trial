@@ -1,49 +1,92 @@
 import React from 'react';
 
-interface Day {
-    dataCollectionCbcRate: {
-        rbc: string;
-        hb: string;
-        pcv: string;
-        plt: string;
-        wbc: string;
-        neutrophil: string;
-        lymphocyte: string;
-        eosinophil: string;
-        basophil: string;
-    }[],
-    activityRate: {
-        comment: string;
-    }[],
-    dataCollectionEsrRate: {
-        results: string;
-        refValue: string;
-    }[],
-    animalAssessmentRate: {
-        weight: string;
-        lps: string;
-        detamine: string;
-    }[],
+interface AnimalAssessmentDataRate {
+    id: number;
+    weight: number;
+    lps: number;
+    detamine: number;
+    createdAt: string;
+    updatedAt: string;
+    dayId?: number | null;
 }
 
+interface DataCollectionCbcRate {
+    id: number;
+    rbc: number;
+    pcv: number;
+    plt: number;
+    wbc: number;
+    neutrophil: number;
+    lymphocyte: number;
+    eosinophil: number;
+    basophil: number;
+    monocyte: number;
+    mcv: number;
+    mch: number;
+    mchc: number;
+    createdAt: string;
+    updatedAt: string;
+    dayId?: number | null;
+}
+
+interface DataCollectionEsrRate {
+    id: number;
+    results: number;
+    refValue: number;
+    createdAt: string;
+    updatedAt: string;
+    dayId?: number | null;
+}
+
+interface ActivityRate {
+    id: number;
+    comments: string;
+    createdAt: string;
+    updatedAt: string;
+    dayId?: number | null;
+}
+
+interface Day {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    rateId?: number | null;
+    animalAssessmentData: AnimalAssessmentDataRate[];
+    dataCollectionEsrRate: DataCollectionEsrRate[];
+    activityRates: ActivityRate[];
+    dataCollectionCbcRate: DataCollectionCbcRate[];
+}
 
 interface Rate {
-    id: string;
+    id: number;
     name: string;
+    groupId?: number | null;
     days: Day[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface Group {
-    id: string;
+    id: number;
     name: string;
+    studyId?: number | null;
     rates: Rate[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface Study {
-    id: string;
+    id: number;
     name: string;
+    noOfDays: number;
+    noOfRates: number;
+    createdAt: string;
+    updatedAt: string;
+    clerkId: string;
     groups: Group[];
 }
+
 
 const getMaxDaysForStudy = (study: Study): number => {
     let maxDays = 0;
@@ -98,10 +141,10 @@ const DataCollectionEsr: React.FC<{ study: Study }> = ({ study }) => {
                                         return (
                                             <React.Fragment key={dayIndex}>
                                                 <td className="border px-4 py-2 text-center text-sm text-gray-600">
-                                                    {day ? day.dataCollectionEsrRate?.result ?? '-' : '-'}
+                                                    {day ? day.dataCollectionEsrRate[0]?.results ?? '-' : '-'}
                                                 </td>
                                                 <td className="border px-4 py-2 text-center text-sm text-gray-600">
-                                                    {day ? day.dataCollectionEsrRate?.refValue ?? '-' : '-'}
+                                                    {day ? day.dataCollectionEsrRate[0]?.refValue ?? '-' : '-'}
                                                 </td>                                                                                            
                                             </React.Fragment>
                                         );

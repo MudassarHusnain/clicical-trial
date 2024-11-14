@@ -72,6 +72,9 @@ export async function GET(req: Request) {
             where: {
                 dayId: Number(dayId),
             },
+            orderBy:{
+                id: 'asc'
+              }
         });
 
         return NextResponse.json({

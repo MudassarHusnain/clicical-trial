@@ -1,24 +1,33 @@
-// app/studies/page.tsx
 'use client';
+
 import { useAuth } from '@clerk/nextjs';
 import { useStudies } from '@/hooks/useStudies';
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import Link from 'next/link';
+import EditStudyForm from '@/components/EditStudy';
+import { useState } from 'react';
 
 function Page() {
   const { userId } = useAuth();
   const clerkId = userId || '';
-
   const { data: studies, isLoading, error } = useStudies(clerkId);
 
-  const handleEdit = (id: string) => {
-    // Implement edit logic here
-    console.log(`Editing study with id: ${id}`);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedStudy, setSelectedStudy] = useState(null);
+
+  const handleEdit = (study: any) => {
+    setSelectedStudy(study); // Set the selected study data
+    setIsEditModalOpen(true); // Open the modal
   };
 
   const handleDelete = (id: string) => {
-    // Implement delete logic here
     console.log(`Deleting study with id: ${id}`);
+    // Implement delete logic here
+  };
+
+  const closeModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedStudy(null);
   };
 
   if (isLoading) return <div className="text-center mt-20">Loading...</div>;
@@ -32,17 +41,14 @@ function Page() {
           studies.map((study) => (
             <div
               key={study.id}
-              className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105" // Added hover effect
+              className="bg-white rounded-lg shadow-md p-6 relative border border-gray-200 transition-transform transform hover:scale-105"
             >
-              <Link
-                href={`/study/${study.id}/group`}
-                className="block hover:text-blue-800 transition-colors duration-200 h-full" // Make link cover entire card
-              >
+             
                 <div className="absolute top-4 right-4 flex space-x-2">
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent Link navigation
-                      handleEdit(study.id);
+                      e.stopPropagation();
+                      handleEdit(study);
                     }}
                     className="text-blue-500 hover:text-blue-700 transition-colors"
                   >
@@ -50,7 +56,7 @@ function Page() {
                   </button>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent Link navigation
+                      e.stopPropagation();
                       handleDelete(study.id);
                     }}
                     className="text-red-500 hover:text-red-700 transition-colors"
@@ -58,6 +64,10 @@ function Page() {
                     <FiTrash size={20} />
                   </button>
                 </div>
+                <Link
+                href={`/study/${study.id}/group`}
+                className="block hover:text-blue-800 transition-colors duration-200 h-full"
+              >
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">{study.name}</h2>
                 <p className="text-gray-600">
                   <strong>Days:</strong> {study.noOfDays}
@@ -74,6 +84,16 @@ function Page() {
           </p>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && selectedStudy && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg">
+            <EditStudyForm study={selectedStudy} />
+            <button onClick={closeModal} className="mt-4 text-red-500">Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

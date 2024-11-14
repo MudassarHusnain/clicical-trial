@@ -16,6 +16,9 @@ export async function GET(req: Request) {
       where: {
         studyId: Number(studyId),
       },
+      orderBy:{
+        id: 'asc'
+      }
     });
 
     return NextResponse.json({ groups }, { status: 200 });

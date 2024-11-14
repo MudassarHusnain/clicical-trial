@@ -43,6 +43,9 @@ export async function GET(req: Request) {
             where: {
                 dayId: Number(dayId), // Ensure dayId is a number
             },
+            orderBy:{
+              id: 'asc'
+            }
         });
 
         return NextResponse.json({
